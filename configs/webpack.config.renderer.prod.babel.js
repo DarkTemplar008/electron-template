@@ -37,6 +37,32 @@ export default merge(baseConfig, {
 
   module: {
     rules: [
+      {
+        test: /\.less$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: './',
+            },
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true,
+              lessOptions: {
+                javascriptEnabled: true,
+              }
+            }
+          }
+        ],
+      },
       // Extract all .global.css to style.css as is
       {
         test: /\.global\.css$/,
