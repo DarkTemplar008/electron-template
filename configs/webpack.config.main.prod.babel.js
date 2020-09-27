@@ -21,17 +21,15 @@ export default merge(baseConfig, {
 
   target: 'electron-main',
 
-  entry: './app/main.dev.ts',
+  entry: './src/main/main.dev.ts',
 
   output: {
     path: path.join(__dirname, '..'),
-    filename: './app/main.prod.js',
+    filename: './dist/main.prod.js',
   },
 
   optimization: {
-    minimizer: process.env.E2E_BUILD
-      ? []
-      : [
+    minimizer: [
           new TerserPlugin({
             parallel: true,
             sourceMap: true,

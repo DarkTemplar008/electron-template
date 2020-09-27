@@ -26,12 +26,12 @@ export default merge(baseConfig, {
   entry: [
     'core-js',
     'regenerator-runtime/runtime',
-    path.join(__dirname, '..', 'app/index.tsx'),
+    path.join(__dirname, '..', 'src/renderer/index.tsx'),
   ],
 
   output: {
-    path: path.join(__dirname, '..', 'app/dist'),
-    publicPath: './dist/',
+    path: path.join(__dirname, '..', 'dist'),
+    publicPath: './',
     filename: 'renderer.prod.js',
   },
 
@@ -204,9 +204,7 @@ export default merge(baseConfig, {
   },
 
   optimization: {
-    minimizer: process.env.E2E_BUILD
-      ? []
-      : [
+    minimizer: [
           new TerserPlugin({
             parallel: true,
             sourceMap: true,
@@ -236,7 +234,6 @@ export default merge(baseConfig, {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
       DEBUG_PROD: false,
-      E2E_BUILD: false,
     }),
 
     new MiniCssExtractPlugin({

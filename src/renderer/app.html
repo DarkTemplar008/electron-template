@@ -11,14 +11,14 @@
         ) {
           const link = document.createElement('link');
           link.rel = 'stylesheet';
-          link.href = './dist/style.css';
+          link.href = './style.css';
           // HACK: Writing the script path should be done with webpack
           document.getElementsByTagName('head')[0].appendChild(link);
         }
       })();
     </script>
   </head>
-  <body>
+  <body onkeydown="onKeyDown(event);">
     <div id="root"></div>
     <script>
       if (typeof process === 'object') {
@@ -34,7 +34,7 @@
           const port = process.env.PORT || 1212;
           scripts.push(`http://localhost:${port}/dist/renderer.dev.js`);
         } else {
-          scripts.push('./dist/renderer.prod.js');
+          scripts.push('./renderer.prod.js');
         }
 
         if (scripts.length) {
@@ -43,6 +43,16 @@
               .map(script => `<script defer src="${script}"><\/script>`)
               .join('')
           );
+        }
+      }
+
+      function onKeyDown(event) {
+        if (event.code === "Escape") {
+          var ipcRenderer = require("electron").ipcRenderer;
+          var msgChannel = require("./MsgChannel.json");
+          if (ipcRenderer) {
+            ipcRenderer.send(msgChannel["IPCChannelName"]["kAppExit"],"");
+          }
         }
       }
     </script>
