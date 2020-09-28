@@ -1,0 +1,1 @@
+﻿export {Theme, changeTheme, getTheme} from './theme/Theme';

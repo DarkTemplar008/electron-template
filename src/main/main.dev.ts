@@ -35,6 +35,7 @@ class MainApp {
     app.on('ready', () => this.initImpl());
   }
 
+  private theme : string = 'light-theme';
   private initImpl() {
     this.initWindows();
     this.initIPC();
@@ -43,7 +44,7 @@ class MainApp {
         for(let i in this.windows) {
           this.windows[i]?.webContents.openDevTools({mode: 'detach'});
         }
-      });      
+      });    
     }
   }
 
@@ -59,8 +60,8 @@ class MainApp {
 
   private initWindows() {
       this.mainWindow = this.createWindow(
-          {x: 0, y: 0, width: 1460, height: 810}, 
-          `file://${__dirname}/app.html`, 
+          {x: 0, y: 0, width: 800, height: 450}, 
+          process.env.NODE_ENV === 'development' ? `file://${__dirname}/../../dist/app.html`:`file://${__dirname}/app.html`, 
           'dist/renderer.prod.js', 
           null
       );
@@ -98,27 +99,40 @@ class MainApp {
   }
 
   private initIPC() {
-      this.mainWindow?.webContents.on('did-finish-load', () => {
-          if (process.env.START_MINIMIZED) {
-              this.mainWindow?.minimize();
-          } else {
-              this.mainWindow?.show();
-              this.mainWindow?.focus();
-          }
-          if (process.env.NODE_ENV === 'development') {
-            this.mainWindow?.webContents.closeDevTools();
-          }
-        });
-      
-      this.mainWindow?.on('closed', () => {
-          this.uninit();
-      });
+    this.mainWindow?.webContents.on('did-finish-load', () => {
+      if (process.env.START_MINIMIZED) {
+          this.mainWindow?.minimize();
+      } else {
+          this.mainWindow?.show();
+          this.mainWindow?.focus();
+      }
+      if (process.env.NODE_ENV === 'development') {
+        this.mainWindow?.webContents.closeDevTools();
+      }
+    });
+    
+    this.mainWindow?.on('closed', () => {
+        this.uninit();
+    });
 
-      app.on('window-all-closed', () => {
-          if (process.platform !== 'darwin') {
-            app.quit();
-          }
-      });
+    app.on('window-all-closed', () => {
+        if (process.platform !== 'darwin') {
+          app.quit();
+        }
+    });
+
+    let currentTheme = 'light-theme';
+    let kThemeCmd = ChannelName["IPCChannelName"]["kChangeTheme"];
+    ipcMain.on(kThemeCmd, (evt, args) => {
+      currentTheme = args?.theme ? currentTheme : args.theme; 
+      for (let i in this.windows) {
+        this.windows[i]?.webContents.send(kThemeCmd, args);
+      }
+    });
+    let kQueryTheme = ChannelName["IPCChannelName"]["kQueryTheme"];
+    ipcMain.on(kQueryTheme, (evt, args) => {
+      evt.returnValue = currentTheme;
+    })
   }
 }
 

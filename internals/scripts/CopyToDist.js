@@ -1,6 +1,5 @@
 ﻿var fs = require('fs');
 var path = require('path');
-var chalk = require('chalk');
 
 var fileFound = [];
 function walk(parentDir, pattern) {
@@ -29,13 +28,9 @@ var distDir = path.resolve(__dirname, '../../dist/');
 for (var i in fileFound) {
     var distPath = path.join(distDir, fileFound[i].name);
     if (fileFound[i]) {
-        chalk.whiteBright.bgGreen.bold('拷贝：' + fileFound[i].filePath + distPath);
         fs.copyFileSync(fileFound[i].filePath, distPath);
     }
 }
 
 // 拷贝MsgChannel.json
-chalk.whiteBright.bgGreen.bold('拷贝：' + path.join(rootDir, './common/MsgChannel.json') + path.join(distDir, './MsgChannel.json'));
 fs.copyFileSync(path.join(rootDir, './common/MsgChannel.json'), path.join(distDir, './MsgChannel.json'));
-
-chalk.whiteBright.bgGreen.bold('拷贝完成');
