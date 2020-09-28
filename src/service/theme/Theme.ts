@@ -1,8 +1,9 @@
 ﻿import {ipcRenderer} from 'electron';
 import './theme.less';
-import ChannelName from '../../common/MsgChannel.json';
+import {ChannelName} from '../../common/MsgChannel';
+let channelName: ChannelName = require('../../common/MsgChannel.json');
 
-let kThemeCmd = ChannelName["IPCChannelName"]["kChangeTheme"];
+let kThemeCmd = channelName.IPCChannelName.kChangeTheme;
 ipcRenderer.on(kThemeCmd, (evt, args)=>{
   let {theme} = args;
   let root = document.getElementById('root');
@@ -14,7 +15,7 @@ function changeTheme(theme: Theme) {
     ipcRenderer.send(kThemeCmd, {theme});
 }
 
-let kQueryThemeCmd = ChannelName["IPCChannelName"]["kQueryTheme"];
+let kQueryThemeCmd = channelName.IPCChannelName.kQueryTheme;
 function getTheme() {
     return ipcRenderer.sendSync(kQueryThemeCmd);
 }

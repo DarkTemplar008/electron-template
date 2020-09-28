@@ -1,6 +1,7 @@
 ﻿{
     "IPCChannelName" : {
-        "kAppExit" : "app.exit",
-        "kChangeTheme" : "app.theme.change"
+        "kAppExit"      : "app.exit",
+        "kChangeTheme"  : "app.theme.change",
+        "kQueryTheme"   : "app.theme.query"
     }
 }

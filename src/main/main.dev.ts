@@ -13,7 +13,8 @@ import 'regenerator-runtime/runtime';
 import {resolve} from 'path';
 import {app, BrowserWindow, ipcMain, globalShortcut} from 'electron';
 import {Bounding} from '../common/Geometry';
-import ChannelName from '../common/MsgChannel.json';
+import {ChannelName} from '../common/MsgChannel';
+let channelName: ChannelName = require('../common/MsgChannel.json');
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -122,14 +123,14 @@ class MainApp {
     });
 
     let currentTheme = 'light-theme';
-    let kThemeCmd = ChannelName["IPCChannelName"]["kChangeTheme"];
+    let kThemeCmd = channelName.IPCChannelName.kChangeTheme;
     ipcMain.on(kThemeCmd, (evt, args) => {
       currentTheme = args?.theme ? currentTheme : args.theme; 
       for (let i in this.windows) {
         this.windows[i]?.webContents.send(kThemeCmd, args);
       }
     });
-    let kQueryTheme = ChannelName["IPCChannelName"]["kQueryTheme"];
+    let kQueryTheme = channelName.IPCChannelName.kQueryTheme;
     ipcMain.on(kQueryTheme, (evt, args) => {
       evt.returnValue = currentTheme;
     })
@@ -137,4 +138,4 @@ class MainApp {
 }
 
 new MainApp().init();
-ipcMain.on(ChannelName["IPCChannelName"]["kAppExit"], ()=>app.quit());
+ipcMain.on(channelName.IPCChannelName.kAppExit, ()=>app.quit());
